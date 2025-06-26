@@ -6,12 +6,20 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="GET">
-        
-        <label for="">Title</label>
-        <input type="text" name="title">
-        <label for="">Number</label>
-        <input type="number" name="number">
+    {% comment %} For GET
+     
+    <form action="GET">  {% endcomment %}
+    
+    {% comment %} For POST
+
+        <form action = "POST"
+            {% csrf_token %} 
+        {% endcomment %}
+
+
+    <form action = "POST">   
+        {% csrf_token %}
+        {{ form.as_p }}
         <button type="submit">Submit</button>
     </form>
 </body>
