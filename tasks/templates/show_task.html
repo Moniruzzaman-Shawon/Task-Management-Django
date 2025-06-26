@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Task</title>
+</head>
+<body>
+    <div>
+        {% comment %} <h1>Server</h1> {% endcomment %}
+        <ul>
+            {% for task in tasks %}
+                <li>{{ task }}</li>
+            {% endfor %}
+
+            <div>
+                <h1>Task3</h1>
+                {{ task3 }}
+            </div>
+        </ul>
+    </div>
+</body>
+</html>
