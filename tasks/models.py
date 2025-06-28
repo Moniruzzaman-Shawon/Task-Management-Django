@@ -25,7 +25,7 @@ class Task(models.Model):
     project = models.ForeignKey(
         "Project",
         on_delete=models.CASCADE,
-        default=1
+        related_name='details',
     )
     assigned_to = models.ManyToManyField(Employee, related_name='tasks')
     title = models.CharField(max_length=250)
