@@ -30,6 +30,6 @@ def view_task(request):
     task = Task.objects.all()
 
     #retrive a specific task
-    task_3 = Task.objects.get(id = 3)
+    # task_3 = Task.objects.get(id = 3)
 
     return render(request, 'show_task.html', {"tasks" : task, "task3" : task_3})
