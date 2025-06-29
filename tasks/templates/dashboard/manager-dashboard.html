@@ -20,14 +20,14 @@
                 <span>{{task.title}}</span>
               </div>
               <div>
-                <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm">{{task.details.priority}}</span>
+                <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm">{{task.details.get_priority_display}}</span>
               </div>
               <div class="flex -space-x-2">
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">CA</div>
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">JS</div>
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">B</div>
+                  {% for emp in task.assigned_to.all %}
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">{{ emp.name|slice:':1' }}</div>
+                  {% endfor %}
               </div>
-              <div class="text-gray-500">9 months ago</div>
+              <div class="text-gray-500">{{ task.created_at|timesince}} ago</div>
             </div>
             {% endfor %}
 
