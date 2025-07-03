@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=h1, initial-scale=1.0">
+    <title>Document</title>
+    
+</head>
+<body>
+    <h1>Welcome to Authentication System</h1>
+    <div>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button class="text-red-600" type="submit">Signup</button>
+        </form>
+    </div>
+</body>
+</html>

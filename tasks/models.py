@@ -32,7 +32,7 @@ class Task(models.Model):
     description = models.TextField()
     due_date = models.DateField()
     status = models.CharField(
-        max_length=15, choices=STATUS_CHOICES, default="PENDING")
+    max_length=15, choices=STATUS_CHOICES, default="PENDING")
     is_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
