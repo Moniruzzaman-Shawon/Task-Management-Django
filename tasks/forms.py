@@ -11,3 +11,9 @@ class TaskForm(forms.Form):
     def __init__(self, *args, **kwargs):
         employees = kwargs.pop("employees", [])
         super().__init__(*args, **kwargs) # * for unpack
+# tasks/forms.py
+
+class StyledFormMixin:
+    def add_form_control_class(self):
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
