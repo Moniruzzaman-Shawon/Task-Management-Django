@@ -162,5 +162,3 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = "m.zaman.djp@gmail.com"
 EMAIL_HOST_PASSWORD = "bhjt ywzu ckgk hqos"
 
-# "m.zaman.djp@gmail.com"
-# "bhjt ywzu ckgk hqos"

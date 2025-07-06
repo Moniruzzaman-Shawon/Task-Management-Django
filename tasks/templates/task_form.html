@@ -1,25 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create Task</title>
 </head>
 <body>
-    {% comment %} For GET
-     
-    <form action="GET">  {% endcomment %}
-    
-    {% comment %} For POST
-
-        <form action = "POST"
-            {% csrf_token %} 
-        {% endcomment %}
-
-
-    <form action = "POST">   
+    <form action="{% url 'create-task' %}" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ task_form.as_p }}
+        {{ task_detail_form.as_p }}
         <button type="submit">Submit</button>
     </form>
 </body>
