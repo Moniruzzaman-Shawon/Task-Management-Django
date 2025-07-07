@@ -80,8 +80,22 @@ class LoginForm(StyledFormMixin, AuthenticationForm):
         super().__init__(*arg, **kwargs)
 
 
-class AssignRoleForm(forms.Form):
+class AssignRoleForm(StyledFormMixin, forms.Form):
     role = forms.ModelChoiceField(
         queryset=Group.objects.all(),
         empty_label="Select a role"
     )
+
+class CreateGroupForm(StyledFormMixin, forms.ModelForm):
+    permission = forms.ModelMultipleChoiceField(
+        queryset = Permission.objects.all(),
+        widget = forms.CheckboxSelectMultiple,
+        required = False,
+        label = 'Assign Permission'
+
+    ),
+
+    class Meta:
+        model = Group
+        fields = ['name', 'permissions']
+    

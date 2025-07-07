@@ -1,0 +1,19 @@
+{% extends "admin/dashboard.html" %}
+{% block content %}
+    <div class='w-1/2 mx-auto my-8'>
+        <ul>
+            {% for messege in messeges %}
+                <li class='bg-green-500 text-white px-1 py-2'>{{messege}}</li>
+            {% endfor %}
+        </ul>
+        <form method="POST" action="">
+            {% csrf_token %}
+            {{form}}
+            <button type='submit'class=" mt-4 px-2 py-1 text-white bg-blue-500 rounded">
+                Create Group
+            </button>
+
+        </form>
+    </div>
+{% endblock content %}
+

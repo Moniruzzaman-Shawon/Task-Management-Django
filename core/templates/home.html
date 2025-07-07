@@ -54,7 +54,7 @@
       {{ user }}
       <form action="{% url 'logout' %}" method="POST">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger mt-2">logout</button>
+        {% comment %} <button type="submit" class="btn btn-danger mt-2">logout</button> {% endcomment %}
       </form>
     {% else %}
       Anonymous
