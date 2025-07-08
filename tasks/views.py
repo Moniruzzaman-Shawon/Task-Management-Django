@@ -33,7 +33,7 @@ def manager_dashboard(request):
         in_progress=Count('id', filter=Q(status='IN_PROGRESS')),
         pending=Count('id', filter=Q(status='PENDING')),
     )
-    print("DEBUG - counts:", counts) 
+    # print("DEBUG - counts:", counts) 
 
     # Retriving task data
 
@@ -51,7 +51,7 @@ def manager_dashboard(request):
 
     context = {
         "tasks": tasks,
-        "counts": counts
+        "counts": counts,
     }
     return render(request, "dashboard/manager-dashboard.html", context)
 
