@@ -17,7 +17,7 @@
               <div class="grid grid-cols-4 gap-4 p-4 items-center">
               <div class="flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                <span>{{task.title}}</span>
+                <a href="{% url 'task-details' task.id %}">{{task.title}}</a>
               </div>
               <div>
                 <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm">{{task.details.get_priority_display}}</span>
