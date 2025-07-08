@@ -33,6 +33,7 @@ def manager_dashboard(request):
         in_progress=Count('id', filter=Q(status='IN_PROGRESS')),
         pending=Count('id', filter=Q(status='PENDING')),
     )
+    print("DEBUG - counts:", counts) 
 
     # Retriving task data
 
