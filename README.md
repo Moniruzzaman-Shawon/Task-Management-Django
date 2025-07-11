@@ -28,7 +28,6 @@ This app helps users to create, update, delete, and manage their daily tasks eff
 
 ### 🔧 Setup Instructions
 
-#### 1. Clone the Repository
 
 ```bash
 #Clone the Repository
@@ -53,3 +52,54 @@ python manage.py runserver
 
 #Run the Development Server
 python manage.py runserver
+```
+
+
+📁 Folder Structure
+```
+Task-Management-Django/
+│
+├── taskapp/           # Main Django App
+├── templates/         # HTML Templates
+├── static/            # Static files
+├── db.sqlite3         # SQLite DB (default)
+├── manage.py
+└── requirements.txt   # Project dependencies
+
+
+```
+
+
+📦 Optional: PostgreSQL Support
+```
+brew install postgresql
+brew services start postgresql
+```
+
+## settings.py
+```
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'your_db_name',
+        'USER': 'your_db_user',
+        'PASSWORD': 'your_db_password',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
+
+```
+
+## ✍️ Author
+
+**Moniruzzaman Shawon**  
+🔗 [LinkedIn](https://www.linkedin.com/in/moniruzzamanshawon/)  
+📫 Email: m.zaman.djp@gmail.com
+
+---
+
+## 📃 License
+
+This project is licensed under the **MIT License**.  
+Feel free to use, modify, and distribute it.
