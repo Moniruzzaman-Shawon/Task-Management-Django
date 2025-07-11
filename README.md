@@ -99,7 +99,5 @@ DATABASES = {
 
 ---
 
-## 📃 License
+Copyright (c) 2025 Moniruzzaman Shawon
 
-This project is licensed under the **MIT License**.  
-Feel free to use, modify, and distribute it.
