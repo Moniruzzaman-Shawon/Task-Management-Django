@@ -8,6 +8,6 @@ class UserProfile(models.Model):
     bio = models.TextField(blank=True)
 
     def __str__(self):
-        return f'self.user.username profile'
+        return f'{self.user.username} profile'
     
 

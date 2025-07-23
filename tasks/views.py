@@ -7,7 +7,8 @@ from django.db.models import Q, Count, Max, Min, Avg
 from django.contrib import messages
 from users.views import is_admin
 from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
-
+from django.views.generic import ListView, DetailView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 # Create your views here.
@@ -133,6 +134,50 @@ def update_task(request, id):
 
     context = {"task_form": task_form, "task_detail_form": task_detail_form}
     return render(request, "task_form.html", context)
+
+
+
+class UpdateTask(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Task
+    form_class = TaskModelForm
+    template_name = 'task_form.html'
+    context_object_name = 'task'
+    pk_url_kwarg = 'id'
+    permission_required = 'tasks.change_task'
+    raise_exception = False  # redirect instead of 403
+    login_url = 'login'  #  login page
+    permission_denied_message = "You do not have permission to edit this task."
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['task_form'] = self.get_form()
+        if hasattr(self.object, 'details') and self.object.details:
+            context['task_detail_form'] = TaskDetailModelForm(
+                instance=self.object.details)
+        else:
+            context['task_detail_form'] = TaskDetailModelForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        task_form = TaskModelForm(request.POST, instance=self.object)
+        task_detail_form = TaskDetailModelForm(
+            request.POST, request.FILES, instance=getattr(self.object, 'details', None))
+
+        if task_form.is_valid() and task_detail_form.is_valid():
+            task = task_form.save()
+            task_detail = task_detail_form.save(commit=False)
+            task_detail.task = task
+            task_detail.save()
+            messages.success(request, "Task Updated Successfully")
+            return redirect('update-task', self.object.id)
+
+        return self.render_to_response(self.get_context_data(
+            task_form=task_form,
+            task_detail_form=task_detail_form
+        ))
+
+
 
 @login_required
 @permission_required("tasks.delete_task", login_url='no-permission')
