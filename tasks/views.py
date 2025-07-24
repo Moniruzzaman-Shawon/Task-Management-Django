@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from tasks.forms import TaskForm, TaskModelForm, TaskDetailModelForm
 from tasks.models import Employee, Task, TaskDetail, Project
@@ -9,6 +9,12 @@ from users.views import is_admin
 from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
 from django.views.generic import ListView, DetailView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views import View
+from django.contrib import messages
+from .forms import TaskModelForm, TaskDetailModelForm
+from django.utils.decorators import method_decorator
+
+
 
 
 # Create your views here.
@@ -83,18 +89,21 @@ def test(request):
     return render(request, 'test.html', context)
 
 
-def create_task(request):
-    # employees = Employee.objects.all()
-    task_form = TaskModelForm()  # For GET
-    task_detail_form = TaskDetailModelForm()
+class CreateTaskView(View):
+    def get(self, request):
+        task_form = TaskModelForm()
+        task_detail_form = TaskDetailModelForm()
+        context = {
+            "task_form": task_form,
+            "task_detail_form": task_detail_form,
+        }
+        return render(request, "task_form.html", context)
 
-    if request.method == "POST":
+    def post(self, request):
         task_form = TaskModelForm(request.POST)
         task_detail_form = TaskDetailModelForm(request.POST)
 
         if task_form.is_valid() and task_detail_form.is_valid():
-
-            """ For Model Form Data """
             task = task_form.save()
             task_detail = task_detail_form.save(commit=False)
             task_detail.task = task
@@ -103,37 +112,44 @@ def create_task(request):
             messages.success(request, "Task Created Successfully")
             return redirect('create-task')
 
-    context = {"task_form": task_form, "task_detail_form": task_detail_form}
-    return render(request, "task_form.html", context)
+        context = {
+            "task_form": task_form,
+            "task_detail_form": task_detail_form,
+        }
+        return render(request, "task_form.html", context)
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(permission_required("tasks.change_task", login_url='no-permission'), name='dispatch')
+class UpdateTaskView(View):
+    def get(self, request, id):
+        task = get_object_or_404(Task, id=id)
+        task_form = TaskModelForm(instance=task)
+        task_detail_form = TaskDetailModelForm(instance=task.details) if task.details else TaskDetailModelForm()
+        context = {
+            "task_form": task_form,
+            "task_detail_form": task_detail_form,
+        }
+        return render(request, "task_form.html", context)
 
-@login_required
-@permission_required("tasks.change_task", login_url='no-permission')
-def update_task(request, id):
-    task = Task.objects.get(id=id)
-    task_form = TaskModelForm(instance=task)  # For GET
-
-    if task.details:
-        task_detail_form = TaskDetailModelForm(instance=task.details)
-
-    if request.method == "POST":
+    def post(self, request, id):
+        task = get_object_or_404(Task, id=id)
         task_form = TaskModelForm(request.POST, instance=task)
-        task_detail_form = TaskDetailModelForm(
-            request.POST, instance=task.details)
+        task_detail_form = TaskDetailModelForm(request.POST, instance=task.details)
 
         if task_form.is_valid() and task_detail_form.is_valid():
-
-            """ For Model Form Data """
             task = task_form.save()
             task_detail = task_detail_form.save(commit=False)
             task_detail.task = task
             task_detail.save()
 
             messages.success(request, "Task Updated Successfully")
-            return redirect('update-task', id)
+            return redirect('update-task', id=id)
 
-    context = {"task_form": task_form, "task_detail_form": task_detail_form}
-    return render(request, "task_form.html", context)
+        context = {
+            "task_form": task_form,
+            "task_detail_form": task_detail_form,
+        }
+        return render(request, "task_form.html", context)
 
 
 
@@ -144,7 +160,7 @@ class UpdateTask(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     context_object_name = 'task'
     pk_url_kwarg = 'id'
     permission_required = 'tasks.change_task'
-    raise_exception = False  # redirect instead of 403
+    raise_exception = False  
     login_url = 'login'  #  login page
     permission_denied_message = "You do not have permission to edit this task."
 
@@ -179,18 +195,19 @@ class UpdateTask(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
 
 
-@login_required
-@permission_required("tasks.delete_task", login_url='no-permission')
-def delete_task(request, id):
-    if request.method == 'POST':
-        task = Task.objects.get(id=id)
+@method_decorator(login_required, name='dispatch')
+@method_decorator(permission_required("tasks.delete_task", login_url='no-permission'), name='dispatch')
+class DeleteTaskView(View):
+    def post(self, request, id):
+        task = get_object_or_404(Task, id=id)
         task.delete()
         messages.success(request, 'Task Deleted Successfully')
         return redirect('manager-dashboard')
-    else:
+
+    def get(self, request, id):
         messages.error(request, 'Something went wrong')
         return redirect('manager-dashboard')
-
+    
 @login_required
 @permission_required("tasks.view_task", login_url='no-permission')
 def view_task(request):
@@ -199,20 +216,21 @@ def view_task(request):
     return render(request, "show_task.html", {"projects": projects})
 
 
-@login_required
-@permission_required("tasks.view_task", login_url='no-permission')
-def task_details(request, task_id):
-    task = Task.objects.get(id=task_id)
-    status_choices = Task.STATUS_CHOICES
+@method_decorator(login_required, name='dispatch')
+@method_decorator(permission_required("tasks.view_task", login_url='no-permission'), name='dispatch')
+class TaskDetailsView(View):
+    def get(self, request, task_id):
+        task = get_object_or_404(Task, id=task_id)
+        status_choices = Task.STATUS_CHOICES
+        return render(request, 'task_details.html', {"task": task, "status_choices": status_choices})
 
-    if request.method == 'POST':
+    def post(self, request, task_id):
+        task = get_object_or_404(Task, id=task_id)
         selected_status = request.POST.get('task_status')
         print(selected_status)
         task.status = selected_status
         task.save()
-        return redirect('task-details', task.id)
-
-    return render(request, 'task_details.html', {"task": task, 'status_choices': status_choices})
+        return redirect('task-details', task_id=task.id)
 
 
 @login_required
